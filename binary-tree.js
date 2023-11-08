@@ -62,13 +62,43 @@ class BinaryTreeNode {
   /** minDepth(): return the minimum depth from the invoking node -- that is,
    * the length of the shortest path from the invoking node to a leaf. */
    minDepth() {
+    let count = 1;
+    let current = this;
 
+    if(!current.right && current.left){
+      count += current.left.minDepth()
+    }
+    if(!current.left && current.right){
+      count += current.right.minDepth()
+    }
+    if(!current.left && !current.right){
+      return count;
+    }
+    if(current.left && current.right){
+      count += Math.min(current.left.minDepth(), current.right.minDepth())
+    }
+
+    return count;
   }
 
   /** nextLarger(lowerBound): return the smallest value from the invoking node
    * that is larger than lowerBound. Return null if no such value exists. */
 
   nextLarger(lowerBound) {
+    let greaterSet = [];
+    let stack = [this];
+
+    while (stack.length){
+      let current = stack.pop();
+      if (current.val > lowerBound) greaterSet.push(current.val);
+      if (current.left) stack.push(current.left);
+      if (current.right) stack.push(current.right);
+    }
+
+    if (!greaterSet.length){
+      return null;
+    }
+    return Math.min(...greaterSet);
 
   }
 }
@@ -112,14 +142,23 @@ class BinaryTree {
   // this is a stack or recursion problem; we'll use recursion
 
   minDepth() {
-
+    let pathCount = 0;
+    if (this.root){
+      pathCount += this.root.minDepth();
+    }
+    return pathCount;
   }
 
   /** nextLarger(lowerBound): return the smallest value in the tree
    * that is larger than lowerBound. Return null if no such value exists. */
 
   nextLarger(lowerBound) {
+    let nextLargest = null;
+    if (this.root){
+      nextLargest = this.root.nextLarger(lowerBound);
+    }
 
+    return nextLargest;
   }
 
   /** Further study!
